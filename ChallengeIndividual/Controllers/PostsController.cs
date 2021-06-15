@@ -6,16 +6,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ChallengeIndividual.Models;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using ChallengeIndividual.Models.ViewModels;
 
 namespace ChallengeIndividual.Controllers
 {
     public class PostsController : Controller
     {
         private readonly DataContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public PostsController(DataContext context)
+        public PostsController(DataContext context, IWebHostEnvironment enviroment)
         {
             _context = context;
+            _environment = enviroment;
         }
 
         // GET: Posts
@@ -55,24 +60,32 @@ namespace ChallengeIndividual.Controllers
         // GET: Posts/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id");
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
-        // POST: Posts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Article,Image,CategoryId")] Post post)
+        public async Task<IActionResult> Create(PostViewModel post)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(post);
+                string uniqueFileName = UploadedFile(post);
+
+                Post _post = new Post
+                {
+                    Title = post.Title,
+                    Article = post.Article,
+                    CategoryId = post.CategoryId,
+                    Image = uniqueFileName
+                };
+
+                _context.Add(_post);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", post.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
             return View(post);
         }
 
@@ -89,16 +102,14 @@ namespace ChallengeIndividual.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", post.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
             return View(post);
         }
 
         // POST: Posts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Article,Image,CategoryId")] Post post)
+        public async Task<IActionResult> Edit(int id, PostViewModel post)
         {
             if (id != post.Id)
             {
@@ -125,7 +136,7 @@ namespace ChallengeIndividual.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", post.CategoryId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
             return View(post);
         }
 
@@ -162,6 +173,27 @@ namespace ChallengeIndividual.Controllers
         private bool PostExists(int id)
         {
             return _context.Posts.Any(e => e.Id == id);
+        }
+
+        private string UploadedFile(PostViewModel model)
+        {
+            string uniqueFileName = null;
+
+            if (model.Image != null)
+            {
+                string uploadsFolder = Path.Combine(_environment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.Image.CopyTo(fileStream);
+                }
+            }
+            return uniqueFileName;
         }
     }
 }

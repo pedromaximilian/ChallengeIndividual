@@ -37,7 +37,11 @@
                 @Html.DisplayFor(modelItem => item.Article)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Image)
+                
+                <img src="~/images/@item.Image"
+                     class="rounded-circle"
+                     height="40" 
+                     asp-append-version="true" />
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Category.Id)
