@@ -12,7 +12,7 @@ namespace ChallengeIndividual.Models
         public string Article { get; set; }
         public string Image { get; set; }
         public int? CategoryId { get; set; }
-
+        public DateTime CreatedAt { get; set; }
         public virtual Category Category { get; set; }
     }
 }

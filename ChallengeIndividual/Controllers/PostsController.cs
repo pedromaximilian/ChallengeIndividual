@@ -26,7 +26,7 @@ namespace ChallengeIndividual.Controllers
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Posts.Include(p => p.Category);
+            var dataContext = _context.Posts.Include(p => p.Category).OrderByDescending(x => x.CreatedAt);
             return View(await dataContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace ChallengeIndividual.Controllers
         // GET: Posts
         public async Task<IActionResult> List()
         {
-            var dataContext = _context.Posts.Include(p => p.Category);
+            var dataContext = _context.Posts.Include(p => p.Category).OrderByDescending(x => x.CreatedAt);
             return View(await dataContext.ToListAsync());
         }
 
@@ -78,7 +78,8 @@ namespace ChallengeIndividual.Controllers
                     Title = post.Title,
                     Article = post.Article,
                     CategoryId = post.CategoryId,
-                    Image = uniqueFileName
+                    Image = uniqueFileName,
+                    CreatedAt = DateTime.UtcNow,
                 };
 
                 _context.Add(_post);
@@ -175,6 +176,32 @@ namespace ChallengeIndividual.Controllers
             return _context.Posts.Any(e => e.Id == id);
         }
 
+        public async Task<IActionResult> Search(string query)
+        {
+            var postList = _context.Posts.Include(p => p.Category).ToList();
+
+            if (query != null)
+            {
+                postList = postList.Where(x => x.Title.ToLower().Contains(query.ToLower()) || x.Article.ToLower().Contains(query.ToLower())).OrderByDescending(x => x.CreatedAt).ToList();
+
+                
+            }
+
+            if (postList.Count > 0)
+            {
+                return View("List", postList);
+            }
+            else 
+            {
+                ViewBag.Error = "No se encontraron resultados";
+                return View("List", null);
+            }
+
+
+            
+        }
+
+        // Upload files
         private string UploadedFile(PostViewModel model)
         {
             string uniqueFileName = null;
