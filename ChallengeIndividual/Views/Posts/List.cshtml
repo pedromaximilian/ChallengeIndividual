@@ -3,55 +3,40 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Article)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Article)
-            </td>
-            <td>
-                
-                <img src="~/images/@item.Image"
-                     class="rounded-circle"
-                     height="40" 
-                     asp-append-version="true" />
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+<h1>Posts</h1>
+<form class="form-inline my-2 my-lg-0" asp-action="Search" method="get">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+</form>
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.Error
+    </div>
 }
-    </tbody>
-</table>
+else
+{
+    <div class="container">
+
+        <div class="col-md-12">
+            <div class="card-group">
+                @foreach (var item in Model)
+                {
+                    <div class="card m-3">
+                        <img class="card-img-top" src="~/images/@item.Image" alt="@item.Title" style="height:300px;width:auto;">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Title</h5>
+
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            <p class="card-text"><small class="text-muted">@item.CreatedAt</small></p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+}
+
+
+
