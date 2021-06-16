@@ -6,11 +6,11 @@
 <h1>Posts</h1>
 <form class="form-inline my-2 my-lg-0" asp-action="Search" method="get">
     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
-    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
 </form>
 @if (ViewBag.Error != null)
 {
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-danger mt-2" role="alert" >
         @ViewBag.Error
     </div>
 }
