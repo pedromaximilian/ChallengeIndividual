@@ -71,7 +71,7 @@ namespace ChallengeIndividual.Controllers
         {
             if (ModelState.IsValid)
             {
-                string uniqueFileName = UploadedFile(post);
+                string uniqueFileName = UploadFile(post);
 
                 Post _post = new Post
                 {
@@ -103,8 +103,15 @@ namespace ChallengeIndividual.Controllers
             {
                 return NotFound();
             }
+            PostViewModel _post = new PostViewModel
+            {
+                Title = post.Title,
+                Article = post.Article,
+                CategoryId = post.CategoryId,
+                CreatedAt = DateTime.UtcNow,
+            };
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
-            return View(post);
+            return View(_post);
         }
 
         // POST: Posts/Edit/5
@@ -119,9 +126,21 @@ namespace ChallengeIndividual.Controllers
 
             if (ModelState.IsValid)
             {
+
+                var _post = await _context.Posts.FindAsync(id);
+                _post.Title = post.Title;
+                _post.Article = post.Article;
+                _post.CategoryId = post.CategoryId;
+                if (post.Image != null)
+                {
+                    DeleteFile(_post.Image);
+                    string uniqueFileName = UploadFile(post);
+                    _post.Image = uniqueFileName;
+                }
+                
                 try
                 {
-                    _context.Update(post);
+                    _context.Update(_post);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -168,6 +187,7 @@ namespace ChallengeIndividual.Controllers
             var post = await _context.Posts.FindAsync(id);
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
+            DeleteFile(post.Image);
             return RedirectToAction(nameof(Index));
         }
 
@@ -182,9 +202,7 @@ namespace ChallengeIndividual.Controllers
 
             if (query != null)
             {
-                postList = postList.Where(x => x.Title.ToLower().Contains(query.ToLower()) || x.Article.ToLower().Contains(query.ToLower())).OrderByDescending(x => x.CreatedAt).ToList();
-
-                
+                postList = postList.Where(x => x.Title.ToLower().Contains(query.ToLower()) || x.Article.ToLower().Contains(query.ToLower())).OrderByDescending(x => x.CreatedAt).ToList(); 
             }
 
             if (postList.Count > 0)
@@ -196,13 +214,10 @@ namespace ChallengeIndividual.Controllers
                 ViewBag.Error = "No se encontraron resultados";
                 return View("List", null);
             }
-
-
-            
         }
 
         // Upload files
-        private string UploadedFile(PostViewModel model)
+        private string UploadFile(PostViewModel model)
         {
             string uniqueFileName = null;
 
@@ -222,5 +237,27 @@ namespace ChallengeIndividual.Controllers
             }
             return uniqueFileName;
         }
+
+        // Delete files
+        public void DeleteFile(string imageName)
+        {
+            try
+            {
+                string uploadsFolder = Path.Combine(_environment.WebRootPath, "images");
+                var uniqueFileName = imageName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+                System.IO.File.Delete(filePath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+
     }
 }
