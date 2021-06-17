@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ChallengeIndividual.Models.Post>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Post List";
 }
 <h1>Posts</h1>
 <form class="form-inline my-2 my-lg-0" asp-action="Search" method="get">
@@ -22,19 +22,33 @@ else
             <div class="card-group">
                 @foreach (var item in Model)
                 {
-                    <div class="card m-3">
-                        <img class="card-img-top" src="~/images/@item.Image" alt="@item.Title" style="height:300px;width:auto;">
-                        <div class="card-body">
-                            <h5 class="card-title">@item.Title</h5>
 
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                            <p class="card-text"><small class="text-muted">@item.CreatedAt</small></p>
+
+                    <div class="col-md-6">
+                        <div class="card m-3">
+                            @if (item.Image != null)
+                            {
+                                <img class="card-img-top" src="~/images/@item.Image" alt="@item.Title" style="height:300px;width:auto;">
+                            }
+                            else
+                            {
+                                <img class="card-img-top" src="http://via.placeholder.com/640x360" style="height:300px;width:auto;">
+
+
+                            }
+
+                            <div class="card-body">
+                                <h5 class="card-title">@item.Title</h5>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-success my-2 my-lg-0">Read more</a>
+                                <p class="card-text"><small class="text-muted">@item.CreatedAt</small></p>
+                            </div>
                         </div>
                     </div>
-                }
-            </div>
 
-        </div>
+                        }
+                    </div>
+
+                </div>
     </div>
 }
 
