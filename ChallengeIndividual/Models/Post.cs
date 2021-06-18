@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChallengeIndividual.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ChallengeIndividual.Models
 {
-    public partial class Post
+    public partial class Post : ISoftDelete
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "Please enter Post Title")]
@@ -32,6 +33,9 @@ namespace ChallengeIndividual.Models
 
         [Display(Name = "Image")]
         public string Image { get; set; }
+
+
+        public DateTime? DeletedAt { get; set; }
         public virtual Category Category { get; set; }
     }
 }

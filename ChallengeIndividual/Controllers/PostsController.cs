@@ -26,7 +26,7 @@ namespace ChallengeIndividual.Controllers
         // GET: Posts
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Posts.Include(p => p.Category).OrderByDescending(x => x.CreatedAt);
+            var dataContext = _context.Posts.Include(p => p.Category).Where(x => x.DeletedAt == null).OrderByDescending(x => x.CreatedAt);
             return View(await dataContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace ChallengeIndividual.Controllers
         // GET: Posts
         public async Task<IActionResult> List()
         {
-            var dataContext = _context.Posts.Include(p => p.Category).OrderByDescending(x => x.CreatedAt);
+            var dataContext = _context.Posts.Include(p => p.Category).Where(x => x.DeletedAt == null).OrderByDescending(x => x.CreatedAt);
             return View(await dataContext.ToListAsync());
         }
 
@@ -48,7 +48,7 @@ namespace ChallengeIndividual.Controllers
 
             var post = await _context.Posts
                 .Include(p => p.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id && m.DeletedAt == null);
             if (post == null)
             {
                 return NotFound();
@@ -99,7 +99,7 @@ namespace ChallengeIndividual.Controllers
             }
 
             var post = await _context.Posts.FindAsync(id);
-            if (post == null)
+            if (post == null || post.DeletedAt == null)
             {
                 return NotFound();
             }
@@ -119,15 +119,20 @@ namespace ChallengeIndividual.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, PostViewModel post)
         {
-            if (id != post.Id)
+            if (id != post.Id )
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-
                 var _post = await _context.Posts.FindAsync(id);
+                if (_post == null || _post.DeletedAt != null)
+                {
+                    return NotFound();
+                }
+
+
                 _post.Title = post.Title;
                 _post.Article = post.Article;
                 _post.CategoryId = post.CategoryId;
@@ -171,7 +176,7 @@ namespace ChallengeIndividual.Controllers
 
             var post = await _context.Posts
                 .Include(p => p.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id && m.DeletedAt == null);
             if (post == null)
             {
                 return NotFound();
@@ -198,7 +203,7 @@ namespace ChallengeIndividual.Controllers
 
         public async Task<IActionResult> Search(string query)
         {
-            var postList = _context.Posts.Include(p => p.Category).OrderByDescending(x => x.CreatedAt).ToList();
+            var postList = _context.Posts.Include(p => p.Category).Where(x => x.DeletedAt == null).OrderByDescending(x => x.CreatedAt).ToList();
 
             if (query != null)
             {
