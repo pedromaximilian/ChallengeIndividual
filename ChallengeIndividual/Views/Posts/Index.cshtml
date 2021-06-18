@@ -9,9 +9,12 @@
 <p>
     <a asp-action="Create" class="btn btn-info">Create New</a>
 </p>
-<table class="table dataTable table-striped table-bordered">
+<table class="table dataTable table-striped table-bordered display">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
@@ -28,33 +31,39 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
 
-                <td>
-                    @if (item.Image != null)
-                    {
-                        <img src="~/images/@item.Image" alt="@item.Title" style="height:100px;width:auto;">
-                    }
-                    else
-                    {
-                        <img src="http://via.placeholder.com/640x360" style="height:100px;width:auto;">
+            <td>
+                @if (item.Image != null)
+                {
+                    <img src="~/images/@item.Image" alt="@item.Title" style="height:100px;width:auto;">
+                }
+                else
+                {
+                    <img src="http://via.placeholder.com/640x360" style="height:100px;width:auto;">
 
 
-                    }
+                }
 
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category.Name)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-                </td>
-            </tr>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+            <td>
+
+                <div class="btn-group">
+                    <a asp-action="Edit" asp-route-id="@item.Id" type="button" class="btn btn-secondary btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" type="button" class="btn btn-secondary btn-primary">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" type="button" class="btn btn-secondary btn-danger">Delete</a>
+                </div>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

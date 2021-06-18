@@ -100,7 +100,7 @@ namespace ChallengeIndividual.Controllers
             }
 
             var post = await _context.Posts.FindAsync(id);
-            if (post == null || post.DeletedAt == null)
+            if (post == null || post.DeletedAt != null)
             {
                 TempData["Error"] = "Post not found";
                 return RedirectToAction(nameof(Index));
@@ -112,6 +112,11 @@ namespace ChallengeIndividual.Controllers
                 CategoryId = post.CategoryId,
                 CreatedAt = DateTime.UtcNow,
             };
+            if (post.Image !=null)
+            {
+                ViewBag.Image = post.Image;
+            }
+
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
             return View(_post);
         }
