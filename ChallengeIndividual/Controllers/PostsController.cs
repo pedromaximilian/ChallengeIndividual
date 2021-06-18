@@ -133,7 +133,6 @@ namespace ChallengeIndividual.Controllers
                 _post.CategoryId = post.CategoryId;
                 if (post.Image != null)
                 {
-                    DeleteFile(_post.Image);
                     string uniqueFileName = UploadFile(post);
                     _post.Image = uniqueFileName;
                 }
@@ -154,6 +153,8 @@ namespace ChallengeIndividual.Controllers
                         throw;
                     }
                 }
+
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
@@ -187,7 +188,6 @@ namespace ChallengeIndividual.Controllers
             var post = await _context.Posts.FindAsync(id);
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
-            DeleteFile(post.Image);
             return RedirectToAction(nameof(Index));
         }
 
@@ -198,7 +198,7 @@ namespace ChallengeIndividual.Controllers
 
         public async Task<IActionResult> Search(string query)
         {
-            var postList = _context.Posts.Include(p => p.Category).ToList();
+            var postList = _context.Posts.Include(p => p.Category).OrderByDescending(x => x.CreatedAt).ToList();
 
             if (query != null)
             {
@@ -211,7 +211,7 @@ namespace ChallengeIndividual.Controllers
             }
             else 
             {
-                ViewBag.Error = "No se encontraron resultados";
+                ViewBag.ErrorBusqueda = "No se encontraron resultados";
                 return View("List", null);
             }
         }
@@ -239,7 +239,7 @@ namespace ChallengeIndividual.Controllers
         }
 
         // Delete files
-        public void DeleteFile(string imageName)
+        public bool DeleteFile(string imageName)
         {
             try
             {
@@ -251,10 +251,12 @@ namespace ChallengeIndividual.Controllers
                     Directory.CreateDirectory(uploadsFolder);
                 }
                 System.IO.File.Delete(filePath);
+                return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                return false;
             }
 
         }

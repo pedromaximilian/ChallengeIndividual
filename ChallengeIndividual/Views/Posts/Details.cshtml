@@ -7,7 +7,20 @@
 <div class="card mb-3" style="max-width: 540px;">
     <div class="row no-gutters">
         <div class="col-md-12">
-            <img src="~/images/@Model.Image" alt="@Model.Title" class="card-img m-2">
+            
+
+            @if (@Model.Image != null)
+            {
+                <img src="~/images/@Model.Image" alt="@Model.Title"  class="card-img m-2">
+            }
+            else
+            {
+                <img src="http://via.placeholder.com/640x360" class="card-img m-2">
+
+
+            }
+
+
         </div>
         <div class="col-md-8">
             <div class="card-body">
