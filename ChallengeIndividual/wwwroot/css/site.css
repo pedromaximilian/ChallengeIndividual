@@ -79,3 +79,12 @@ body {
     object-fit: cover;
 }
 
+.swal2-container.swal2-top-end > .swal2-popup, .swal2-container.swal2-top-right > .swal2-popup {
+    grid-column: 3;
+    align-self: start;
+    justify-self: end;
+    background-color: #cbe9ea;
+    border: 4px;
+
+}
+

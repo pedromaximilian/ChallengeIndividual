@@ -84,6 +84,7 @@ namespace ChallengeIndividual.Controllers
 
                 _context.Add(_post);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Post Created successfully";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
@@ -101,7 +102,8 @@ namespace ChallengeIndividual.Controllers
             var post = await _context.Posts.FindAsync(id);
             if (post == null || post.DeletedAt == null)
             {
-                return NotFound();
+                TempData["Error"] = "Post not found";
+                return RedirectToAction(nameof(Index));
             }
             PostViewModel _post = new PostViewModel
             {
@@ -159,7 +161,7 @@ namespace ChallengeIndividual.Controllers
                     }
                 }
 
-
+                TempData["Success"] = "Post edited successfully";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", post.CategoryId);
@@ -193,6 +195,7 @@ namespace ChallengeIndividual.Controllers
             var post = await _context.Posts.FindAsync(id);
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Post deleted successfully";
             return RedirectToAction(nameof(Index));
         }
 

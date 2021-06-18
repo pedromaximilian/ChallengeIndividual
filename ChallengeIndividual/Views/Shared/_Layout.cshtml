@@ -6,6 +6,12 @@
     <title>@ViewData["Title"] - ChallengeIndividual</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.min.css"></script>
 </head>
 <body>
     <header>
@@ -35,11 +41,37 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            @if (ViewData["Error"] != null)
+            @if (TempData["Error"] != null)
             {
-                <div class="alert alert-danger mt-2" role="alert">
-                    @ViewData["Error"]
-                </div>
+
+                <script>
+                    $(document).ready(function () {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: '@TempData["Error"]',
+                            showConfirmButton: false,
+                            timer: 10000
+                        });
+                    });
+                </script>
+            }
+            @if (TempData["Success"] != null)
+            {
+
+                <script>
+                    $(document).ready(function () {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: '@TempData["Success"]',
+                            showConfirmButton: false,
+                            timer: 10000
+                        });
+                    });
+                </script>
             }
             @RenderBody()
         </main>
@@ -50,11 +82,7 @@
             &copy; 2021 - ChallengeIndividual - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
