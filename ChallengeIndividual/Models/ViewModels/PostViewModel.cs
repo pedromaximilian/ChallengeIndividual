@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
-#nullable disable
-
-namespace ChallengeIndividual.Models
+namespace ChallengeIndividual.Models.ViewModels
 {
-    public partial class Post
+    public class PostViewModel
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "Please enter Post Title")]
@@ -31,7 +32,7 @@ namespace ChallengeIndividual.Models
 
 
         [Display(Name = "Image")]
-        public string Image { get; set; }
+        public IFormFile Image { get; set; }
         public virtual Category Category { get; set; }
     }
 }

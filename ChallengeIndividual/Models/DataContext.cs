@@ -28,8 +28,6 @@ namespace ChallengeIndividual.Models
             modelBuilder.Entity<Category>(entity =>
             {
 
-                entity.Property(e => e.Id).HasColumnName("id");
-
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .HasColumnName("name");
@@ -37,19 +35,6 @@ namespace ChallengeIndividual.Models
 
             modelBuilder.Entity<Post>(entity =>
             {
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Article).HasColumnName("article");
-
-                entity.Property(e => e.CategoryId).HasColumnName("categoryId");
-
-                entity.Property(e => e.Image).HasColumnName("image");
-
-                entity.Property(e => e.Title)
-                    .HasMaxLength(50)
-                    .HasColumnName("title")
-                    .IsFixedLength(true);
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Posts)

@@ -4,14 +4,16 @@ using ChallengeIndividual.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ChallengeIndividual.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210615182102_postCreatedAt")]
+    partial class postCreatedAt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,8 +49,6 @@ namespace ChallengeIndividual.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Article")
-                        .IsRequired()
-                        .HasMaxLength(2147483647)
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("article");
 
@@ -64,7 +64,6 @@ namespace ChallengeIndividual.Migrations
                         .HasColumnName("image");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nchar(50)")
                         .HasColumnName("title")
