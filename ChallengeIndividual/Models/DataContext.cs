@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using ChallengeIndividual.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -20,6 +23,38 @@ namespace ChallengeIndividual.Models
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
 
+        public override int SaveChanges() 
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                var entity = entry.Entity;
+
+                if (entry.State == EntityState.Deleted && entity is ISoftDelete)
+                {
+                    entry.State = EntityState.Modified;
+
+                    entity.GetType().GetProperty("DeletedAt").SetValue(entity, DateTime.UtcNow);
+
+                }
+            }
+            return base.SaveChanges();
+        }
+        public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                var entity = entry.Entity;
+
+                if (entry.State == EntityState.Deleted && entity is ISoftDelete)
+                {
+                    entry.State = EntityState.Modified;
+
+                    entity.GetType().GetProperty("DeletedAt").SetValue(entity, DateTime.UtcNow);
+
+                }
+            }
+            return await base.SaveChangesAsync(cancellationToken);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
