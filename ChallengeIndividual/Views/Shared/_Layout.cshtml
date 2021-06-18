@@ -6,6 +6,10 @@
     <title>@ViewData["Title"] - ChallengeIndividual</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/sweetalert.css" />
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.css">
+
+    <link href="~/css/datablesFA.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -35,12 +39,7 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            @if (ViewData["Error"] != null)
-            {
-                <div class="alert alert-danger mt-2" role="alert">
-                    @ViewData["Error"]
-                </div>
-            }
+
             @RenderBody()
         </main>
     </div>
@@ -51,11 +50,46 @@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.17/dist/sweetalert2.all.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
+
+
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+                    $(document).ready(function () {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: '@TempData["Error"]',
+                            showConfirmButton: false,
+                            timer: 10000
+                        });
+                    });
+        </script>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <script>
+                    $(document).ready(function () {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: '@TempData["Success"]',
+                            showConfirmButton: false,
+                            timer: 10000
+                        });
+                    });
+        </script>
+    }
 </body>
 </html>
